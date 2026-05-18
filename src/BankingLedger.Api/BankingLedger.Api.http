@@ -1,0 +1,88 @@
+### Banking Ledger API — HTTP scratch file for manual testing.
+### Run `docker compose up -d` first, then `dotnet run --project src/BankingLedger.Api`.
+
+@host = http://localhost:5259
+@contentType = application/json
+
+# ─────────────────────────────────────────
+# ACCOUNTS
+# ─────────────────────────────────────────
+
+### Create an account with an initial balance
+POST {{host}}/api/accounts
+Content-Type: {{contentType}}
+
+{
+  "ownerName": "Alice",
+  "initialBalance": 1000.00
+}
+
+### Get account by ID  (replace the GUID)
+GET {{host}}/api/accounts/00000000-0000-0000-0000-000000000001
+
+### Get balance
+GET {{host}}/api/accounts/00000000-0000-0000-0000-000000000001/balance
+
+### Get ledger (transaction history)
+GET {{host}}/api/accounts/00000000-0000-0000-0000-000000000001/ledger
+
+### Deposit
+POST {{host}}/api/accounts/00000000-0000-0000-0000-000000000001/deposit
+Content-Type: {{contentType}}
+
+{
+  "amount": 250.00,
+  "description": "Paycheck"
+}
+
+### Withdraw
+POST {{host}}/api/accounts/00000000-0000-0000-0000-000000000001/withdraw
+Content-Type: {{contentType}}
+
+{
+  "amount": 100.00,
+  "description": "Rent"
+}
+
+### Close account
+POST {{host}}/api/accounts/00000000-0000-0000-0000-000000000001/close
+
+# ─────────────────────────────────────────
+# TRANSFERS
+# ─────────────────────────────────────────
+
+### Transfer between two accounts
+POST {{host}}/api/transfers
+Content-Type: {{contentType}}
+
+{
+  "fromAccountId": "00000000-0000-0000-0000-000000000001",
+  "toAccountId":   "00000000-0000-0000-0000-000000000002",
+  "amount": 200.00,
+  "description": "Rent split"
+}
+
+### Get transfer by ID
+GET {{host}}/api/transfers/00000000-0000-0000-0000-000000000099
+
+### List all transfers
+GET {{host}}/api/transfers
+
+# ─────────────────────────────────────────
+# ACID DEMO ENDPOINTS
+# ─────────────────────────────────────────
+
+### ATOMICITY — failed transfer rolls back both sides
+POST {{host}}/api/demo/atomicity/failed-transfer
+
+### CONSISTENCY — DB CHECK constraint blocks negative balance
+POST {{host}}/api/demo/consistency/negative-balance
+
+### ISOLATION — 10 concurrent withdrawals; only 3 succeed
+POST {{host}}/api/demo/isolation/concurrent-withdrawals
+
+### ISOLATION — 5 concurrent transfers; only 2 succeed
+POST {{host}}/api/demo/isolation/concurrent-transfers
+
+### DURABILITY — committed transfer survives
+POST {{host}}/api/demo/durability/create-committed-transfer

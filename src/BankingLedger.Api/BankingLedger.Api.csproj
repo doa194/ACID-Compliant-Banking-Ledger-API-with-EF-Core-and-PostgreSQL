@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- OpenAPI spec generation: produces the JSON schema describing all API endpoints -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+    <!-- Scalar: modern interactive API documentation UI (replaces Swagger UI) -->
+    <PackageReference Include="Scalar.AspNetCore" Version="2.5.5" />
+    <!-- Serilog: structured logging that outputs JSON for easy parsing by log aggregators -->
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <!-- FluentValidation: auto-validate controller action parameters via model binding -->
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    <!-- Pin to resolve MSB3277: a transitive dep pulls 9.0.1, Infrastructure needs 9.0.4 -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BankingLedger.Application\BankingLedger.Application.csproj" />
+    <ProjectReference Include="..\BankingLedger.Infrastructure\BankingLedger.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

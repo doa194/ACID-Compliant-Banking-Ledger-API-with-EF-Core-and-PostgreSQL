@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    # PostgreSQL service container for integration and concurrency tests.
+    # Testcontainers will also spin up its own containers for tests that use it,
+    # but this shows the alternative approach of using a service container.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: banking_ledger_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build (fails on any error or warning treated as error)
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run Unit Tests
+        run: >
+          dotnet test tests/BankingLedger.UnitTests/BankingLedger.UnitTests.csproj
+          --no-build --configuration Release --logger trx --results-directory TestResults
+
+      - name: Run Integration Tests
+        # Docker socket is available on ubuntu-latest — required by Testcontainers.
+        run: >
+          dotnet test tests/BankingLedger.IntegrationTests/BankingLedger.IntegrationTests.csproj
+          --no-build --configuration Release --logger trx --results-directory TestResults
+
+      - name: Run Concurrency Tests
+        run: >
+          dotnet test tests/BankingLedger.ConcurrencyTests/BankingLedger.ConcurrencyTests.csproj
+          --no-build --configuration Release --logger trx --results-directory TestResults
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: TestResults/**/*.trx

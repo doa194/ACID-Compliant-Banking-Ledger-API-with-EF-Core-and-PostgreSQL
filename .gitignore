@@ -1,0 +1,40 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.log
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+!**/packages/repositories.config
+.nuget/
+
+## OS
+.DS_Store
+Thumbs.db
+
+## dotnet secrets
+**/appsettings.*.local.json
+**/secrets.json
+
+## Test results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## Docker
+docker-compose.override.yml
+
+## EF Core Migrations (keep source, ignore redundant outputs)
+# Migrations are checked in — do not ignore them

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="FluentAssertions" Version="6.12.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <!-- Testcontainers: real PostgreSQL is essential for testing actual concurrency behaviour -->
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.0.0" />
+    <!-- Pin to match Infrastructure so MSB3277 version-conflict warning is silenced -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BankingLedger.Api\BankingLedger.Api.csproj" />
+    <ProjectReference Include="..\..\src\BankingLedger.Infrastructure\BankingLedger.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

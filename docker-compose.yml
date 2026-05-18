@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: banking-ledger-postgres
+    environment:
+      POSTGRES_DB: banking_ledger
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    # Named volume: data persists across 'docker-compose down/up' cycles.
+    # This is how we demonstrate Durability — restart the container and the committed
+    # data is still there because PostgreSQL wrote it to this volume.
+    volumes:
+      - banking_ledger_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Optional: pgAdmin for visual database exploration.
+  # Uncomment to use: http://localhost:5050 (admin@admin.com / admin)
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: banking-ledger-pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+
+volumes:
+  banking_ledger_data:
