@@ -1,6 +1,6 @@
 # Transactional Banking Ledger API
 
-A portfolio-grade .NET 10 Web API that demonstrates **ACID database principles** using a
+This .NET 10 Web API that demonstrates **ACID database principles** using a
 realistic banking ledger domain. The focus is not on building a production bank — it is on
 proving, in executable code, that transactions are correct, concurrent, and durable.
 
